@@ -29,3 +29,4 @@ C:\Users\priyanka.yadav\Desktop\Priyanka\Interview\Survey\SurveyWebsite\Core\bin
 C:\Users\priyanka.yadav\Desktop\Priyanka\Interview\Survey\SurveyWebsite\Core\bin\Debug\NPOI.OOXML.xml
 C:\Users\priyanka.yadav\Desktop\Priyanka\Interview\Survey\SurveyWebsite\Core\bin\Debug\NPOI.OpenXml4Net.xml
 C:\Users\priyanka.yadav\Desktop\Priyanka\Interview\Survey\SurveyWebsite\Core\obj\Debug\Core.csproj.CopyComplete
+C:\Users\priyanka.yadav\Desktop\Priyanka\Interview\Survey\SurveyWebsite\Core\obj\Debug\Core.csprojAssemblyReference.cache

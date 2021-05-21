@@ -10,6 +10,8 @@ using Microsoft.Office.Interop.Word;
 using NPOI.HSSF.UserModel;
 using NPOI.Util;
 using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Core
 {
@@ -19,55 +21,49 @@ namespace Core
         {
             SurveyManager manager = new SurveyManager();
             var data = manager.GetSurveyData(uniqueId);
-            var fileName = $"C:\\Users\\priyanka.yadav\\Desktop\\Priyanka\\Interview\\Survey\\SurveyResponseData\\" + data.FirstOrDefault().SurveyId+ ".xlsx";
-            // Declare HSSFWorkbook object to create sheet  
-            var workbook = new HSSFWorkbook();
-            var worksheet = workbook.CreateSheet($"SurveyData {data.FirstOrDefault().UniqueResponseId} {DateTime.Today.ToString("MMM dd yyyy")}");
-            var header = worksheet.CreateRow(0);
-            var headerStyle = workbook.CreateCellStyle();
-            var headerFont = workbook.CreateFont();
-            headerFont.IsBold = true;
-            headerStyle.SetFont(headerFont);
+            var fileName = $"C:\\Users\\priyanka.yadav\\Desktop\\Priyanka\\Interview\\SurveyResponseData.xlsx";
+            var workbook = new XSSFWorkbook();
+            using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite))
+            {
+                workbook = new XSSFWorkbook(file);
+                file.Close();
+            }
+            
+            //var header = worksheet.CreateRow(0);
+            //var headerStyle = workbook.CreateCellStyle();
+            //var headerFont = workbook.CreateFont();
+            //headerFont.IsBold = true;
+            //headerStyle.SetFont(headerFont);
+            ISheet worksheet = workbook.GetSheet("SurveyData2021");//workbook.GetSheet(0)
 
             var cellStyle = workbook.CreateCellStyle();
             cellStyle.WrapText = true;
-
-            var columns = new[] { "Question", "Answer"};
-            var headerRow = worksheet.CreateRow(0);
-
-            for (int i = 0; i < columns.Length; i++)
-            {
-                var cell = headerRow.CreateCell(i);
-                cell.SetCellValue(columns[i]);
-                cell.CellStyle = headerStyle;
-                worksheet.AutoSizeColumn(i);
-                worksheet.SetColumnWidth(i, 5120);//column width is always divided by 256
-            }
-            int rowIndex = 0;
+            var row = worksheet.CreateRow(worksheet.LastRowNum + 1);
+            var cell = row.CreateCell(0);
+            cell.SetCellValue(uniqueId);
+            int colNum = 1;
             foreach (var d in data)
             {
-                rowIndex = rowIndex + 1;
-                var row = worksheet.CreateRow(rowIndex);
-             
-                var cell = row.CreateCell(0);
-                cell.SetCellValue(d.SurveyQuestions.Question);
-                cell.CellStyle = cellStyle;
+                var cell1 = row.CreateCell(colNum);
 
-                var cell1 = row.CreateCell(1);
                 if (!string.IsNullOrEmpty(d.Answer))
-                cell1.SetCellValue(d.Answer);
-                else
+                    cell1.SetCellValue(d.Answer);
+                else if (!string.IsNullOrEmpty(d.AnswerId))
                 {
                     List<int> answerIds = d.AnswerId.Split(',').Select(int.Parse).ToList();
                     cell1.SetCellValue(string.Join(",", manager.GetAnswers(answerIds).Select(a => a.Text).ToArray()));
                 }
-                cell1.CellStyle = cellStyle;
-            }
+                else
+                    cell1.SetCellValue("NA");
 
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            workbook.Write(stream);
-            stream.Close();
-            File.WriteAllBytes(fileName, stream.ToByteArray().ToArray());
+                cell1.CellStyle = cellStyle;
+                colNum++;
+            }
+            using (var file2 = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite))
+            {
+                workbook.Write(file2);
+                file2.Close();
+            }
         }
     }
 }

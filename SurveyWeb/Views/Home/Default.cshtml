@@ -16,26 +16,34 @@
 </head>
 
 <body>
-<form action="SurveyResponse" id="ctl01" method="post" name="ctl01">
-<header>
-    <div class="content-wrapper">
-        <div>
-            <p>
-                <a href="/" id="A2">
-                    <img id="Logo"
-                         src="Assets/Survey1.jpg" style="border-style: None;">
-                </a>
-            </p>
-            <hgroup>
-                <input type="hidden" id="FormSurveyId" name="FormSurveyId" value="@survey.SurveyId"></input>
-                <h1>@survey.Name</h1>
-            </hgroup>
+    @if (TempData["Success"] != null)
+    {
+        <div class="green">
+            <p><strong>Success:</strong> @TempData["Success"].ToString()</p>
         </div>
-    </div>
-</header>
-<div id="body">
-        <div class="content-wrapper">
-            
+    }
+    else
+    {
+    <form action="SurveyResponse" id="ctl01" method="post" name="ctl01">
+        <header>
+            <div class="content-wrapper">
+                <div>
+                    <p>
+                        <a href="/" id="A2">
+                            <img id="Logo"
+                                 src="Assets/Survey1.jpg" style="border-style: None;">
+                        </a>
+                    </p>
+                    <hgroup>
+                        <input type="hidden" id="FormSurveyId" name="FormSurveyId" value="@survey.SurveyId"></input>
+                        <h1>@survey.Name</h1>
+                    </hgroup>
+                </div>
+            </div>
+        </header>
+        <div id="body">
+            <div class="content-wrapper">
+
                 <table>
                     <tr>
                         @if (surveyQuestions != null)
@@ -49,52 +57,53 @@
                                         <table>
                                             @foreach (var question in surveyQuestions)
                                             {
-                                            <tr>
-                                                <input type="hidden" id="FormQuestionResponse" name="FormQuestionResponse"></input>
-                                                <input type="hidden" id="FormQuestionId" name="FormQuestionId" value="@question.QuestionId"></input>
-                                                <td>
-                                                    @question.Question
-                                                </td>
-                                                @if (question.QuestionTypeId == (int)QuestionType.SingleAnswer)
-                                                {
-                                                    foreach (var option in question.SurveyAnswerOptions)
-                                                    {
-                                                        <td>
-                                                            <input type="radio" name=@question.QuestionId Id=@option.AnswerId value=@option.AnswerId>
-                                                            <label for=@option.AnswerId>@option.Text</label>
-                                                        </td>
-                                                    }
-                                                }
-                                                else if (question.QuestionTypeId == (int)QuestionType.Date)
-                                                {
-                                                    <td colspan="4">
-                                                        <input type="date" name=@question.QuestionId Id=@question.QuestionId value="">
-                                                    </td>
-                                                }
-                                                else if (question.QuestionTypeId == (int)QuestionType.Text)
-                                                {
-                                                    <td colspan="4">
-                                                        <input class="textarea" type="text" name=@question.QuestionId Id=@question.QuestionId value="">
-                                                    </td>
-                                                }
-                                                else if (question.QuestionTypeId == (int)QuestionType.Email)
-                                                {
-                                                    <td colspan="4">
-                                                        <input type="email" name=@question.QuestionId Id=@question.QuestionId value="">
-                                                    </td>
-                                                }
-                                                else if (question.QuestionTypeId == (int)QuestionType.MultipleChoice)
-                                                {
-                                                    foreach (var option in question.SurveyAnswerOptions)
-                                                    {
 
-                                                        <td>
-                                                            <input type="checkbox" name=@question.QuestionId Id=@option.AnswerId value=@option.AnswerId>
-                                                            <label for=@option.AnswerId>@option.Text</label>
+                                                <tr>
+                                                    <input type="hidden" id="FormQuestionResponse" name="FormQuestionResponse"></input>
+                                                    <input type="hidden" id="FormQuestionId" name="FormQuestionId" value="@question.QuestionId"></input>
+                                                    <td>
+                                                        @question.Question
+                                                    </td>
+                                                    @if (question.QuestionTypeId == (int)QuestionType.SingleAnswer)
+                                                    {
+                                                        foreach (var option in question.SurveyAnswerOptions)
+                                                        {
+                                                            <td>
+                                                                <input type="radio" name=@question.QuestionId Id=@option.AnswerId value=@option.AnswerId>
+                                                                <label for=@option.AnswerId>@option.Text</label>
+                                                            </td>
+                                                        }
+                                                    }
+                                                    else if (question.QuestionTypeId == (int)QuestionType.Date)
+                                                    {
+                                                        <td colspan="4">
+                                                            <input type="date" name=@question.QuestionId Id=@question.QuestionId value="">
                                                         </td>
                                                     }
-                                                }
-                                            </tr>
+                                                    else if (question.QuestionTypeId == (int)QuestionType.Text)
+                                                    {
+                                                        <td colspan="4">
+                                                            <input class="textarea" type="text" name=@question.QuestionId Id=@question.QuestionId value="">
+                                                        </td>
+                                                    }
+                                                    else if (question.QuestionTypeId == (int)QuestionType.Email)
+                                                    {
+                                                        <td colspan="4">
+                                                            <input type="email" name=@question.QuestionId Id=@question.QuestionId value="">
+                                                        </td>
+                                                    }
+                                                    else if (question.QuestionTypeId == (int)QuestionType.MultipleChoice)
+                                                    {
+                                                        foreach (var option in question.SurveyAnswerOptions)
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" name=@question.QuestionId Id=@option.AnswerId value=@option.AnswerId>
+                                                                <label for=@option.AnswerId>@option.Text</label>
+                                                            </td>
+                                                        }
+                                                    }
+                                                </tr>
                                             }
 
                                         </table>
@@ -105,68 +114,33 @@
                         }
                     </tr>
                 </table>
-            
+
+            </div>
+            <div>
+                <input type="submit" id="btn_click" value="Submit Survey" />
+                <div id="surveySubmitError" style="margin-left: 3%;color: red;display: none">Some error occured</div>
+                <div id="surveySubmitSuccess" style="margin-left: 3%;color: red;display: none">Response Submitted Succesfully</div>
+            </div>
         </div>
-        <div>
-            <input type="submit" id="btn_click" value="Submit Survey" />
-            <div id="surveySubmitError" style="margin-left: 3%;color: red;display: none">Some error occured</div>
-            <div id="surveySubmitSuccess" style="margin-left: 3%;color: red;display: none">Response Submitted Succesfully</div>
-        </div>
-</div>
-</form>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('input[type=radio]').click(function () {
-           
-        });
-    });
-
-    $('#btn_click').click(function() {
-
-        $("#surveySubmitError").css("display", "none");
-        $("input[id$='LevelName'][type='hidden']").each(function () {
-            console.log($(this).val())
-        })
-        var chekItems = [];
-        $("input:checkbox[name=check]:checked").each(function() {
-            chekItems.push($(this).attr("id"));
-        });
-        if (chekItems.length >= 1) {
-            $.ajax({
-                url: '@Url.Action("AddToCart", "Home")',
-            dataType: "json",
-            type: "POST",            
-            cache: false,
-                data: { items: chekItems} ,
-            success: function (resp) {
-                if (resp.success) {
-                    $('input[name="check"]').each(function() {
-                        this.checked = false;
-                    });
-                    $("#addToCartSuccess").html("Data Updated Succesfully");
-                    $("#addToCartSuccess").show();
-                    setTimeout(function() {
-                        $("#addToCartSuccess").hide();
-                    }, 10000);
-                }
-            },
-            error: function (xhr) {
-                $('input[name="check"]').each(function() {
-                        this.checked = false;
-                });
-                $("#addToCartSuccess").html("Error while updating");
-                $("#addToCartSuccess").show();
-                    
+    </form>
+    }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1;
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd
             }
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+
+            today = yyyy + '-' + mm + '-' + dd;
+            $("input[type='date']")[0].max = today;
         });
-        }
-        if($("input:checkbox[name=check]:checked").length<=0)
-        {
-            $("#addToCartError").css("display", "block");
-        }
-    });
-</script>
+    </script>
 </body>
 </html>
 

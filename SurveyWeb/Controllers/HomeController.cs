@@ -17,19 +17,18 @@ namespace SurveyWeb.Controllers
         [AllowAnonymous]
         public ActionResult Default(string returnUrl)
         {
-            var model = (HomeViewModel)TempData["model"];
-            //if (model != null && model.Survey.Any())
-            //    return View(model);
-            ViewBag.ReturnUrl = returnUrl;
             HomeViewModel viewModel = new HomeViewModel();
             viewModel.Survey = manager.GetActiveSurvey();
+            if (TempData["Success"] != null)
+                return View(viewModel);
+            ViewBag.ReturnUrl = returnUrl;
             viewModel.SurveyQuestions = manager.GetQuestions(viewModel.Survey.SurveyId);
             return View(viewModel);
         }
         [AllowAnonymous]
         [HttpPost]
         [ActionName("SurveyResponse")]
-        public void SurveyResponse(FormCollection collection)
+        public ActionResult SurveyResponse(FormCollection collection)
         {
             Helper helper = new Helper();
             Guid g = Guid.NewGuid();
@@ -49,6 +48,9 @@ namespace SurveyWeb.Controllers
             }
             if(manager.AddData(data))
                 helper.AddDataToFile(g.ToString());
+
+            TempData["Success"] = "Thank you for completing the Survey.";
+            return RedirectToAction("Default");
         }
     }
 }
